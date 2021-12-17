@@ -1,0 +1,58 @@
+
+URL : http://vishwateja519.blogspot.com/2013/04/sql-nanswers.html
+
+Select Member_id,Member_name,city,membership_status from lms_members where membership_status='Permanent'
+select m.Member_id,Member_name from lms_members m inner join lms_book_issue b on m.member_id=b.member_id where book_code='BL000002'
+select Book_code,Book_title, Author from lms_book_details where author like 'P%'
+select COUNT(*) as No_of_books from Lms_book_details where category='Java'
+Select category,COUNT(*) No_of_books from Lms_book_details group by category
+Select count(*) No_of_books  from Lms_book_details where publication='Prentice Hall'
+select b.book_code,book_title from Lms_book_details b inner join lms_book_issue i on b.book_code=i.book_code where Date_issue='2012-04-01'
+select * from   Book where issue_date<'2013-02-01'
+select Member_id,Member_name,date_register,membership_status from Lms_members where date_register <'2012-03-01' and membership_status='Temporary'
+select concat(ucase(Mid(book_title,1,1)),lcase(mid(Book_title,2))) from   Book
+select  Member_id,concat(ucase(mid(Member_name,1,1)),lcase(mid(Member_name,1)))Member_name from lms_members where city='DELHI' or city='CHENNAI'
+
+select distinct concat(Book_Title,'_is_written_by_',Author)  as BOOK_WRITTEN_BY from LMS_BOOK_DETAILS
+select avg(price) as AVERAGEPRICE from LMS_BOOK_DETAILS
+group by category having category='JAVA'
+select Supplier_id,supplier_name,email from Lms_suppliers_details where Locate('gmail',email)>0
+select Supplier_id,supplier_name,email from Lms_suppliers_details where CHARINDEX('gmail',email,1)>0
+select Supplier_id,supplier_name,coalesce(contact,email,address) contactdetails from Lms_suppliers_details
+SELECT SUPPLIER_ID,SUPPLIER_NAME, if(Contact is NULL,'No','Yes') from LMS_SUPPLIERS_DETAILS
+SELECT     m.MEMBER_ID, m.MEMBER_NAME, m.CITY, SUM(f.FINE_AMOUNT) AS Fine
+FROM         dbo.LMS_MEMBERS m INNER JOIN
+                      dbo.LMS_BOOK_ISSUE i ON m.MEMBER_ID = i.MEMBER_ID INNER JOIN
+                      dbo.LMS_FINE_DETAILS  f ON i.FINE_RANGE = f.FINE_RANGE
+GROUP BY m.MEMBER_ID, m.MEMBER_NAME, m.CITY
+Select distinct M.member_id,m.member_name,i.Book_code,d.Book_title from LMS_members m inner join LMS_Book_issue i on m.Member_id=i.member_id inner join LMS_book_details d on i.Book_code=d.book_code
+Select count(*) NO_OF_BOOKS_AVAILABLE from LMS_BooK_details where book_code not in(
+select b.Book_code from LMS_BOOK_details b inner join  LMS_BOOK_ISSUE I on b.Book_code=I.Book_code)
+sELECT M.member_id,m.member_name,I.fINE_RANGE,d.fINE_AMOUNT FROM LMS_MEMBERS m inner Join LMS_BOOK_ISSUE i ON M.mEMBER_ID=I.MEMBER_ID inner Join lms_fine_detailS D ON I.fINE_RANGE=d.fINE_RANGE WHERE FINE_AMOUNT<100
+Select Book_code,Book_title,Publication,Book_Edition,Price,date_format(Publish_date,'%Y') as yr from LMS_Book_details order by Yr, Publication,edition
+Select Book_Code,Book_title,Rack_Num from LMS_BOOK_DETAILS where Rack_Num='A1' order by Book_Title
+Select L.member_id,Member_name,date_return,date_returned from LMS_members L inner join LMS_book_ISSUE I on L.Member_id=I.member_id where date_return<date_returned
+Select MEMBER_ID,MEMBER_NAME,DATE_REGISTER from LMS_MEMBERS where MEMBER_ID not in (Select MEMBER_ID from LMS_BOOK_ISSUE)
+select m.member_id,member_name from lms_members m join lms_book_issue i on m.MEMBER_ID=i.MEMBER_ID where FINE_RANGE='R0' and date_format(DATE_RETURNED,'%Y')=2012;
+or
+select m.member_id,member_name from lms_members m join lms_book_issue i on m.MEMBER_ID=i.MEMBER_ID where date_return>=date_returned and date_format(date_returned,'%Y')=2012
+select date_issue NOOFBOOKS, count(DATE_ISSUE) from LMS_Book_issue group by date_issue having count(date_issue)=(select Max(counted) from (select  count(DATe_issue)  as counted from LMS_Book_issue group by Date_issue) as t)
+
+Select Book_Title,Supplier_id from LMS_BOOK_DETAILS where author ='Herbert Schildt' and Book_edition=5 and SUPPLIER_ID='S01'
+select  rack_num,COUNT(Book_code) NOOFBOOKS from LMS_BOOK_DETAILS group by RACK_NUM order by RACK_NUM asc
+Select I.BOOK_ISSUE_NO,MEMBER_NAME,DATE_REGISTER,DATE_EXPIRE,BOOK_TITLE,CATEGORY,AUTHOR,PRICE,DATE_ISSUE,DATE_RETURN,DATE_RETURNED,Fine_amount  from LMS_BOOK_ISSUE I inner join LMS_MEMBERS M on I.MEMBER_ID=M.MEMBER_ID inner join LMS_BOOK_DETAILS B on I.BOOK_CODE=B.BOOK_CODE inner join LMS_FINE_DETAILS F on I.FINE_RANGE=F.FINE_RANGE
+Book_issue_status is not present in database
+Select Book_code,Book_title,PUBLISH_DATE  from LMS_BOOK_DETAILS where date_format(PUBLISH_DATE,'%m')=12
+select BOOK_CODE,BOOK_TITLE,SUPPLIER_NAME,Price from  LMS_BOOK_details B inner join LMS_SUPPLIERS_DETAILS S on B.SUPPLIER_ID=S.SUPPLIER_ID where B.price=(
+select max(price) from LMS_BOOK_DETAILS K where B.SUPPLIER_ID=K.SUPPLIER_ID)
+
+select Book_code,Book_Title,Publication,date_format(now(),'%Y')-date_format(PUBLISH_DATE,'%Y') as Yrs from LMS_BOOK_DETAILS order by Yrs desc
+select BOOK_CODE,Book_Title,SUPPLIER_NAME from LMS_Book_Details B inner join LMS_SUPPLIERS_DETAILS S on B.Supplier_ID=S.Supplier_ID  where S.Supplier_ID in
+(select Supplier_ID from LMS_BOOK_DETAILS  group by Supplier_ID having count(*)=(
+select Max(Cnt) from (Select count(*) as CNT from LMS_BOOK_DETAILS group by Supplier_ID)as T))
+
+select T.Member_id,Member_name,3-T.Cnt from LMS_MEMBERS M inner Join
+(select M.Member_id,Count(I.Member_id) Cnt from LMS_MEmbers  M left outer join LMS_BOOK_ISSUE I on M.MEMBER_ID=I.MEMBER_ID group by M.Member_id)T on T.Member_id=M.Member_id
+Select  D.SUPPLIER_ID,S.SUPPLIER_NAME from  LMS_BOOK_DETAILS  D inner Join LMS_Suppliers_details S on  S.SUPPLIER_ID=D.SUPPLIER_ID where S.SUPPLIER_ID
+in (select Supplier_id from LMS_BOOK_DETAILS B group by B.SUPPLIER_ID having COUNT(B.SuppLier_ID) =
+(select Min(cnt) from (Select COUNT(S.Supplier_ID)cnt from LMS_BOOK_DETAILS S group by S.SUPPLIER_ID)T ))
